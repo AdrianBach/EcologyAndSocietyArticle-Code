@@ -994,4 +994,115 @@ par(mar = c(5,6,2,2)+0.1)
 multi.mean.trj(df = popul, upth = 0, bubo = 0, tmax = 20, yaxis = "Population size")
 setwd(dir = "~/Desktop/PhD/GitKraken/gmse_fork_RQ1/mem-noreset-results/mem-noreset-merged-results/")
 dev.print(device = png, file = "pop-CTL-bigLabs.png", width = 1000)
+
+#### trajectories panel ####
+
+# find max in 
+
+multi.mean.pop.mod <- function(df, upth, bubo, tmax) {
+  # subsetting
+  dd <- subset(df, UT == upth & BB == bubo)
   
+  ymax <- 4100
+  lnwdt <- 4
+  
+  # plot
+  xrange <- seq(0, tmax, 1)
+  plot(1, type = "n", xlab = "", ylab = "", ylim = c(0,ymax), xlim = c(0,20)
+       , xaxt = 'n', cex.axis = 2) # , cex.lab = 3, main = paste("UT = ", upth, " BB = ",bubo)
+  # plot(1, type = "n", xlab = "time", ylab = yaxis, ylim = c(0,max(max.zz,max.dd)), xlim = c(0,20)) # , main = paste("UT = ", upth, " BB = ",bubo)
+  axis(side=1, at=seq(0,length(xrange)-1,1), labels=xrange, cex.axis=2)
+
+  xtendrange <- seq(-1,tmax+1,1)
+  trans <- adjustcolor("lightgreen",alpha.f=0.5)
+  upperUT <- rep((1+upth)*dd[1,6], length(xtendrange))
+  lowerUT <- rep((1-upth)*dd[1,6], length(xtendrange))
+    
+  polygon(c(xtendrange,rev(xtendrange)),c(upperUT,rev(lowerUT)),col=trans, border = "green")
+  abline(h = dd[1,6], col = "darkgreen", lty = 2, lwd = lnwdt)
+  
+  # loop over replicates
+  for (i in which(dd$rep %% 10 == 0)) {
+    points(x = xrange, y = dd[i,7:dim(dd)[2]], type = 'l', lwd = lnwdt, col = 'grey')
+  }
+  
+  moy <- mean(dd[,8])
+  # infci <- NULL
+  # supci <- NULL
+  for (i in 9:(dim(dd)[2])) {
+    moy <- c(moy, mean(dd[,i]))
+    #   infci <- c(infci, boot_sd_ci(dd[,i])[2])
+    #   supci <- c(supci, boot_sd_ci(dd[,i])[3])
+  }
+  
+  # # confidence interval
+  # arrows(xrange[-c(1,2)], infci, xrange[-c(1,2)], supci, length=0.03, angle=90, code=3, col = "black")
+  
+  # trajectory
+  points(x = xrange[-1], y = moy, type = 'l', lwd = lnwdt + 2, col = "black")
+}
+
+popul.ati <- read.csv("~/Desktop/PhD/GitKraken/gmse_fork_RQ1/noreset-results-save/noreset-merged-results/pop-ATI-noreset-merged.csv")[,-1]
+popul.trj <- read.csv(file = "~/Desktop/PhD/GitKraken/gmse_fork_RQ1/mem-noreset-results/mem-noreset-merged-results/pop-ATI-mem-noreset-merged.csv")[,-1]
+
+{
+  plot.new()
+  
+  # divide into four boxes
+  layout(matrix(c(1,2,3,0), nrow = 2, byrow = T))
+  par(mar = c(3, 5, 1, 1))
+  
+  # set space for x and y titles
+  par(oma = c(3, 2.5, 0, 0))
+  
+  # upper left: CTL
+  multi.mean.pop.mod(df = popul.trj, upth = 0, bubo = 0, tmax = 20)
+  mtext("CTL", side = 3, line = -2, adj = 0.98, cex = 2, col = "grey40")
+  # upper right: ATI
+  multi.mean.pop.mod(popul.ati, upth = 0.3, bubo = 0.1, tmax = 20)
+  mtext("ATI", side = 3, line = -2, adj = 0.98, cex = 2, col = "grey40")
+  # lower right: TRJ
+  multi.mean.pop.mod(popul.trj, upth = 0.3, bubo = 0, tmax = 20)
+  mtext("TRJ", side = 3, line = -2, adj = 0.98, cex = 2, col = "grey40")
+  # lower left: legend
+  # legend( 1, 1,             # Location of legend
+  #   # "right",
+  #   xpd = TRUE,                          # Allow drawing outside plot area
+  #   # ncol = 2,
+  #   # xjust = 0,                           # Left justify legend box on x
+  #   # yjust = 0.5,                          # Center legend box on y
+  #   legend = c("Target",
+  #              "PT range",
+  #              "Replicate", 
+  #              "Mean"),
+  #           col = c("darkgreen",                 # Legend Element Colors
+  #                   "green",
+  #                   "grey",
+  #                   "black"),          
+  #           pch = c(NA_integer_,
+  #                   NA_integer_,
+  #                   NA_integer_,
+  #                   NA_integer_ ),                      # Legend Element Styles          
+  #           lty = c(2,
+  #                   NA_integer_,
+  #                   1,
+  #                   1),       
+  #           cex = 2,
+  #           fill = "green"
+  #           # cex = 0.6,
+  #           # title = "Strategies") #,                  # Legend Title
+  #           # title.col = gray(.2) ,                # Legend title color
+  #           # box.lty = 1,                         # Legend box line type
+  #           # box.lwd = 1)                         # Legend box line width
+  # )
+  
+  # x title
+  mtext("Time", outer = TRUE, cex = 2.5, side = 1, line = 0.5, adj = 0.52)
+  # y title
+  mtext("Population size", outer = TRUE, cex = 2.5, side = 2, line = 0, adj = 0.5)
+  
+}
+# dev.off()
+  
+setwd(dir = "~/Desktop/PhD/GitKraken/gmse_fork_RQ1/")
+dev.print(device = png, file = "pop-Strat-bigLabs.png", width = 1000)
