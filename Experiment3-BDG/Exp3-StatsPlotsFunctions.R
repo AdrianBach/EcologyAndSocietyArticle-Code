@@ -979,23 +979,23 @@ ci_sup <- c(ci_sup, sub$ext_prob_95ci_sup)
 
 # plot and export in png
 setwd("~/Desktop/PhD/GitKraken/gmse_fork_RQ1/Budget-ratio-large-batch/")
-{png(file = "extfreq-TRJ-PT50-BR800-bigLabs.png", width = 1000, height = 1000)
+{png(file = "extfreq-TRJ-PT50-BR800-noLabs.png", width = 1000, height = 1000)
   
   { # enlarge margins
-    par(mar = c(5, 6, 1, 1)+0.1)
+    # par(mar = c(5, 6, 1, 1))
     
     # sizes
-    pts <- 3
-    lb <- 3
+    pts <- 4
+    lb <- 4
     ax <- 2
     
     # plot base
     plot(1, type = "n",
          ylim = c(0, 1),
          xlim = c(0, 100),
-         ylab = "Extinction frequency", #
-         xlab = "Budget Bonus (%)", #cex.lab = 1.5, cex.axis = 1.5, cex = 1.5,
-         cex.lab = lb, cex.axis = ax)
+         ylab = "", #
+         xlab = "", # "Budget Bonus (%)", #cex.lab = 1.5, cex.axis = 1.5, cex = 1.5,
+         cex.lab = lb, cex.axis = ax, las = 1)
     
     # Control band
     xtendrange <- seq(-10,110,1)
@@ -1007,7 +1007,7 @@ setwd("~/Desktop/PhD/GitKraken/gmse_fork_RQ1/Budget-ratio-large-batch/")
     abline(h = ext[1], lwd = pts)
     
     # best possible
-    abline(h = 0, lty = 2, lwd = pts, col = "darkgreen")
+    abline(h = 0, lty = 1, lwd = pts-2, col = "darkgreen")
     
     # # UT30
     # arrows(x0 = as.numeric(bubo)-1, y0 = ci_inf[-1,1], x1 = as.numeric(bubo)-1, y1 = ci_sup[-1,1], length=0.02, angle=90, code=3, col = 'blue')
@@ -1017,11 +1017,11 @@ setwd("~/Desktop/PhD/GitKraken/gmse_fork_RQ1/Budget-ratio-large-batch/")
     # arrows(x0 = as.numeric(bubo)+1, y0 = ci_inf[-1,2], x1 = as.numeric(bubo)+1, y1 = ci_sup[-1,2], length=0.02, angle=90, code=3, col = 'violet')
     # points(x = as.numeric(bubo)+1, y = ext[-1,2], type = "b", cex = pts, lwd = pts, col = 'violet', pch = 4);
     arrows(x0 = as.numeric(bubo), y0 = ci_inf[-1], x1 = as.numeric(bubo), y1 = ci_sup[-1], length=0.1, angle=90, code=3, col = 'darkmagenta', lwd = pts-1)
-    points(x = as.numeric(bubo), y = ext[-1], type = "b", cex = pts, lwd = pts-1, col = 'darkmagenta', pch = 17, lty = 3);
+    points(x = as.numeric(bubo), y = ext[-1], type = "b", cex = pts, lwd = pts+1, col = 'darkmagenta', pch = 17, lty = 3);
     
     # legend
     legend( # 110, 0.5,             # Location of legend 
-      "topright",
+      "bottomright",
       # xpd = TRUE,                          # Allow drawing outside plot area
       # ncol = 2,
       # xjust = 0,                           # Left justify legend box on x
@@ -1773,5 +1773,5 @@ multi.mean.pop.mod <- function(df, upth, bubo, bura, tmax) {
 }
 # dev.off()
 
-setwd(dir = "~/Desktop/PhD/GitKraken/gmse_fork_RQ1/")
+setwd(dir = "~/Desktop/PhD/GitKraken/gmse_fork_RQ1/Budget-ratio-large-batch/")
 dev.print(device = png, file = "pop-BDG-bigLabs.png", width = 1000, height = 600)
